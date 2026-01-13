@@ -124,6 +124,11 @@ alias h="cd ~/Hangar"
 alias s="cd ~/Stash"
 alias sb="cd ~/Sandbox"
 
+# Hangar TUI
+hangar() {
+  source ~/Hangar/hangar-tui/.venv/bin/activate && command hangar "$@"
+}
+
 # Quick Access
 alias notes="nvim ~/Documents/Powerhouse/Notes.md"
 alias mitel="cat ~/catfiles/mi_tel"
