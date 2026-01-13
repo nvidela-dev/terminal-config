@@ -194,3 +194,6 @@ jrun() {
 
 alias pyenv="source ~/myenv/.venv/bin/activate"
 alias p3="python3"
+
+# Created by `pipx` on 2026-01-13 14:01:10
+export PATH="$PATH:/Users/nvidela/.local/bin"
