@@ -129,6 +129,11 @@ hangar() {
   source ~/Hangar/hangar-tui/.venv/bin/activate && command hangar "$@"
 }
 
+# Santander Financial TUI
+santander() {
+  source ~/Hangar/santander-parse-tui/.venv/bin/activate && command financial-tui "$@"
+}
+
 # Quick Access
 alias notes="nvim ~/Documents/Powerhouse/Notes.md"
 alias mitel="cat ~/catfiles/mi_tel"
