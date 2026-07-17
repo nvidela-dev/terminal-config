@@ -1,0 +1,35 @@
+# Black and trail-cam yellow palette.
+background = 050403
+foreground = f1d98a
+cursor-color = f8e08e
+selection-background = 4a3812
+selection-foreground = fff1b8
+
+palette = 0=#050403
+palette = 1=#b86832
+palette = 2=#8f7f38
+palette = 3=#d6a62f
+palette = 4=#9b7f42
+palette = 5=#b08a3a
+palette = 6=#c09a48
+palette = 7=#d8c078
+palette = 8=#352b16
+palette = 9=#e08a3e
+palette = 10=#bca94a
+palette = 11=#ffd25a
+palette = 12=#c1a35a
+palette = 13=#e1b85a
+palette = 14=#f0c96b
+palette = 15=#fff1b8
+
+background-opacity = 0.70
+background-opacity-cells = true
+background-blur = false
+window-padding-x = 1
+window-padding-y = 16,1
+window-padding-color = background
+
+macos-titlebar-style = hidden
+confirm-close-surface = false
+quit-after-last-window-closed = false
+command = /opt/homebrew/bin/tmux new-session -A -s main

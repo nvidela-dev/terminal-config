@@ -1,0 +1,35 @@
+#!/bin/zsh
+
+yellow=$'\033[38;2;255;210;90m'
+amber=$'\033[38;2;214;166;47m'
+muted=$'\033[38;2;138;106;33m'
+reset=$'\033[0m'
+bold=$'\033[1m'
+
+host="$(/usr/sbin/scutil --get ComputerName 2>/dev/null || /bin/hostname -s 2>/dev/null || /bin/hostname)"
+os="$(/usr/bin/sw_vers -productName 2>/dev/null) $(/usr/bin/sw_vers -productVersion 2>/dev/null)"
+kernel="$(/usr/bin/uname -sr)"
+cpu="$(/usr/sbin/sysctl -n machdep.cpu.brand_string 2>/dev/null || echo unknown)"
+shell_name="${SHELL:t}"
+term="${TERM_PROGRAM:-${TERM:-unknown}}"
+now="$(/bin/date '+%A, %B %d, %Y  %H:%M')"
+
+mem_bytes="$(/usr/sbin/sysctl -n hw.memsize 2>/dev/null || echo 0)"
+mem_gb="$(/usr/bin/awk -v bytes="$mem_bytes" 'BEGIN { printf "%.0f GB", bytes / 1024 / 1024 / 1024 }')"
+
+cat <<EOF
+${yellow}⢀⢀⣤⠀⠀⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢤⡀⠀⠀⢰⡀⠀⠀⠀⠀${reset}  ${bold}${yellow}${host}${reset}
+${yellow}⣾⣾⣿⠀⣸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣦⠀⢸⣧⠀⠀⣷⡀${reset}  ${muted}os${reset}       ${amber}${os}${reset}
+${yellow}⢻⣿⡏⠀⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣷⣾⡟⠀⢠⣸⣷${reset}  ${muted}kernel${reset}   ${amber}${kernel}${reset}
+${yellow}⠈⣿⣿⣄⣿⡇⠀⠀⢀⣴⡾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣿⠃⠀⠘⣿⣿${reset}  ${muted}cpu${reset}      ${amber}${cpu}${reset}
+${yellow}⠀⠈⠻⢿⣿⣷⣶⣾⠟⠋⠀⠀⠀⢷⣄⠀⠀⠀⠀⠀⣼⡄⠀⠈⣿⡆⠀⣠⣿⡿${reset}  ${muted}memory${reset}   ${amber}${mem_gb}${reset}
+${yellow}⠀⠀⠀⠀⠙⠻⢿⣷⣄⡀⠀⠀⠀⢸⣿⠀⠀⠀⠀⢀⣿⣀⣀⣴⣿⡿⠿⠛⠉⠁${reset}  ${muted}shell${reset}    ${amber}${shell_name}${reset}
+${yellow}⠀⠀⠀⠀⠀⠀⠀⣉⣛⡻⢷⣶⣦⣿⣟⠀⠀⠀⢀⣾⣿⡿⠟⠉⠁⠀⠀⠀⠀⠀${reset}  ${muted}term${reset}     ${amber}${term}${reset}
+${yellow}⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣮⣻⣿⣿⣄⣀⣴⣿⣿⣫⣴⣾⠀⠀⠀⠀⠀⠀⠀${reset}  ${muted}date${reset}     ${amber}${now}${reset}
+${yellow}⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⠀⠀⠀⠀⠀⠀${reset}
+${yellow}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀${reset}
+${yellow}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀${reset}
+${yellow}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀⠀⠀⠀⠀⠀⠀${reset}
+${yellow}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⡋⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀${reset}
+${yellow}⠀⠀⠀⠀⠀⠀⠀⠀⠀⢴⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀${reset}
+EOF

@@ -91,6 +91,19 @@ ghf() {
   open -a "Google Chrome" "$url"
 }
 
+# Open current repo in GitHub
+repo() {
+  local url
+  url=$(git remote get-url origin 2>/dev/null)
+  if [[ -z "$url" ]]; then
+    echo "Not a git repository or no origin remote"
+    return 1
+  fi
+  url=${url#git@github.com:}
+  url=${url%.git}
+  open "https://github.com/$url"
+}
+
 # ┌──────────────────────────────────────────────────────────────────────────────┐
 # │                          Jira Ticket Lookup                                  │
 # └──────────────────────────────────────────────────────────────────────────────┘
@@ -123,20 +136,45 @@ alias sysconf="cd ~/.config"
 alias h="cd ~/Hangar"
 alias s="cd ~/Stash"
 alias sb="cd ~/Sandbox"
-
-# Hangar TUI
-hangar() {
-  source ~/Hangar/hangar-tui/.venv/bin/activate && command hangar "$@"
-}
-
-# Santander Financial TUI
-santander() {
-  source ~/Hangar/santander-parse-tui/.venv/bin/activate && command financial-tui "$@"
-}
+alias dl="cd ~/Downloads"
+alias wavd="cd ~/Music/Wav\ Dump"
 
 # Quick Access
-alias notes="nvim ~/Documents/Powerhouse/Notes.md"
-alias mitel="cat ~/catfiles/mi_tel"
+alias note="nvim ~/Docs/Notes/Current.md"
+alias notesav="mv ~/Docs/Notes/Current.md ~/Docs/Notes/Historical/$(date +%m-%d-%Y).md"
+alias notes="open ~/Docs/Notes/"
+alias notesh="open ~/Docs/Notes/Historical/"
+alias notesd="open ~/Docs/Notes/Docs/"
+alias notesd="open ~/Docs/Notes/Plans/"
+
+notedoc() {
+    read "filename?Document name: "
+
+    # Add .md if user didn't include it
+    [[ "$filename" != *.md ]] && filename="${filename}.md"
+
+    mkdir -p ~/Docs/Notes/Docs
+
+    mv ~/Docs/Notes/Current.md ~/Docs/Notes/Docs/"$filename"
+
+    # Create a fresh Current.md
+    touch ~/Docs/Notes/Current.md
+
+    echo "Saved as ~/Docs/Notes/Docs/$filename"
+}
+
+noteplan() {
+    read "filename?Plan name: "
+
+    [[ "$filename" != *.md ]] && filename="${filename}.md"
+
+    mkdir -p ~/Docs/Notes/Plans
+
+    mv ~/Docs/Notes/Current.md ~/Docs/Notes/Plans/"$filename"
+    touch ~/Docs/Notes/Current.md
+
+    nvim ~/Docs/Notes/Current.md
+}
 
 # ┌──────────────────────────────────────────────────────────────────────────────┐
 # │                                 Docker                                       │
@@ -178,6 +216,17 @@ alias rsb="npm run storybook"
 alias rdev="npm run dev"
 alias nfw="npm run format:write"
 
+# Debug Pipe Configuration
+export DEBUG_PIPE="/tmp/node-debug-pipe"
+alias loginit='rm -f $DEBUG_PIPE && mkfifo $DEBUG_PIPE && echo "Pipe created at $DEBUG_PIPE"'
+alias logwatch='echo "Waiting for logs..." && tail -f $DEBUG_PIPE'
+alias logkill='rm -f $DEBUG_PIPE && echo "Pipe removed"'
+
+npmlog() {
+    npm run "$@" 2> $DEBUG_PIPE
+}
+
+
 # ┌──────────────────────────────────────────────────────────────────────────────┐
 # │                                  Java                                        │
 # └──────────────────────────────────────────────────────────────────────────────┘
@@ -205,5 +254,73 @@ jrun() {
 alias pyenv="source ~/myenv/.venv/bin/activate"
 alias p3="python3"
 
+# ┌──────────────────────────────────────────────────────────────────────────────┐
+# │                                Scrapers                                      │
+# └──────────────────────────────────────────────────────────────────────────────┘
+
+alias scraper="cd ~/Hangar/supermarket-scraper && set -a && source .env && set +a && make run"
+alias scraper-front="cd ~/Hangar/supermarket-scraper-front && npm run dev"
+
 # Created by `pipx` on 2026-01-13 14:01:10
 export PATH="$PATH:/Users/nvidela/.local/bin"
+alias lain="open \"https://archive.org/details/serial-experiments-lain-english/BluRay+(MKV+-+Highest+Quality)/Serial+Experiments+Lain+-+S01E02.mkv\""
+
+# ┌──────────────────────────────────────────────────────────────────────────────┐
+# │                                Utilities                                     │
+# └──────────────────────────────────────────────────────────────────────────────┘
+
+# List .asd files alongside their source files
+lasd() {
+  local files=(*.asd(N))
+  if [[ ${#files[@]} -eq 0 ]]; then
+    echo "No .asd files found."
+    return 0
+  fi
+  for asd in "${files[@]}"; do
+    local base="${asd%.asd}"
+    printf "%-40s | %s\n" "$base" "$asd"
+  done
+}
+
+# Remove all .asd files from current directory
+xasdx() {
+  local files=(*.asd(N))
+  if [[ ${#files[@]} -eq 0 ]]; then
+    echo "No .asd files found in current directory."
+    return 0
+  fi
+  echo "Found ${#files[@]} .asd file(s):"
+  printf '  %s\n' "${files[@]}"
+  echo ""
+  read -q "confirm?Remove these files? [y/N] "
+  echo ""
+  if [[ "$confirm" == "y" ]]; then
+    rm -f "${files[@]}"
+    echo "Removed ${#files[@]} .asd file(s)."
+  else
+    echo "Aborted."
+  fi
+}
+
+# Kill all node processes
+alias nodenuke='pkill -9 node'
+
+# Start the Lock-In TUI from anywhere
+lockin() {
+  (cd /Users/nvidela/Hangar/lock-in && go run ./cmd/lock-in "$@")
+}
+
+# Start the Usual Suspects TUI from anywhere
+usualsuspects() {
+  (cd /Users/nvidela/Hangar/usual-suspects && go run ./cmd/usual-suspects "$@")
+}
+
+# Start the Dev Stats TUI from anywhere
+devstats() {
+  (cd /Users/nvidela/Hangar/dev-stats && go run ./cmd/dev-stats "$@")
+}
+
+# Open Claude Code in the ClaudeLearnNest folder and auto-run /teach
+learnnest() {
+  (cd /Users/nvidela/Docs/Study/ClaudeLearnNest && claude "/teach")
+}
