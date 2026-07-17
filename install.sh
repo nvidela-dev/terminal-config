@@ -150,6 +150,11 @@ install_tmux_plugins() {
   "$tpm_dir/bin/install_plugins"
 }
 
+install_lazyvim_bundle() {
+  log "Installing LazyVim plugin bundle"
+  nvim --headless "+Lazy! sync" +qa
+}
+
 main() {
   ensure_homebrew
   eval "$(brew shellenv)"
@@ -162,6 +167,7 @@ main() {
   sync_repo "$NVIM_REPO_URL" "$NVIM_CONFIG_DIR"
   install_dotfiles
   install_tmux_plugins
+  install_lazyvim_bundle
 
   log "Done"
   printf 'Terminal config: %s\n' "$TERMINAL_CONFIG_DIR"
